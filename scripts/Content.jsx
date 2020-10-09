@@ -1,37 +1,66 @@
 
-import React from 'react';
+import React, {useState,useEffect} from 'react';
+import 'static/style.css'; 
+import TextField from '@material-ui/core/TextField'   // styling purpose
  
 const init = []
  
 
 export function Content() {
-    const [list, setList] = React.useState(init);
-  const [name, setName] = React.useState('');
- 
-  function handleChange(event) {
-    setName(event.target.value);
-  }
- 
-  function handleAdd() {
-    const newList = list.concat({ name });
- 
-    setList(newList);
-  }
+    
+    const [state, setState] = useState ({message: '', name: ''})
+    const [chat, setChat] = useState ([])
+    
+    const onTextChange = e => {
+      setState ({...state, [e.target.name]: e.target.value})
+    }
+    
+    const onMessageSubmit = (e) => {
+      e.preventDefault()
+      const {name, message } =state
+      
+    }
+    
+    const renderChat = () => {
+      return chat.map(({name, message}, index) => ( 
+         <div key={index}>
+          <h3> {name} : <span> {message} </span>  
+          </h3>
+         </div>
+        
+        ))
+    }
+    
+    
  
   return (
-    <div>
-      <div>
-        <input type="text" value={name} onChange={handleChange} />
-        <button type="button" onClick={handleAdd}>
-          Add
-        </button>
+    <div classname="card">
+    <form onSubmit={onMessageSubmit}>
+      <h1> Messanger </h1>
+      <div classname="name-field">
+        <TextField 
+          name="name" 
+          onChange={ e=> onTextChange(e)} 
+          value={state.name} 
+          label = "Name" 
+          />
       </div>
- 
-      <ul>
-        {list.map((item) => (
-          <li key={item.id}>{item.name}</li>
-        ))}
-      </ul>
+      <div>
+        <TextField 
+          name="message" 
+          onChange={ e=> onTextChange(e)} 
+          value={state.message} 
+          id="outline-multiline-static"  //This is for styling purposes
+          variant = "outlined"
+          label = "Message" 
+          />
+      </div>
+     <button>Send Message </button>
+    </form>
+      <div className= "render-chat">
+        <h1> Chat Log </h1>
+        {renderChat()}
+      </div>
     </div>
   );
 }
