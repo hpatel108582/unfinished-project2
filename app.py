@@ -24,13 +24,14 @@ def on_disconnect():
     print ('Someone disconnected!')
 
 
-@socketio.on('new input')
-def on_new_number(data):
-    print("Got an event for new input:", input)
-    newinput = data['input']
-    socketio.emit('input received', {
-        'input': newinput
+@socketio.on('message')
+def on_new_number(name, message):
+    
+    socketio.emit('new message', {
+        'message': {name, message}
     })
+    
+   
 
 if __name__ == '__main__': 
     socketio.run(

@@ -1,5 +1,6 @@
 
 import React, {useState,useEffect} from 'react';
+import { Socket } from './Socket';
 import 'static/style.css'; 
 import TextField from '@material-ui/core/TextField'   // styling purpose
  
@@ -11,6 +12,14 @@ export function Content() {
     const [state, setState] = useState ({message: '', name: ''})
     const [chat, setChat] = useState ([])
     
+    function newNumber() {
+        React.useEffect(() => {
+            Socket.on('message', ({name,message}) => {
+                setChat([...chat,{name, message}])
+            })
+        });
+    }
+    
     const onTextChange = e => {
       setState ({...state, [e.target.name]: e.target.value})
     }
@@ -18,7 +27,10 @@ export function Content() {
     const onMessageSubmit = (e) => {
       e.preventDefault()
       const {name, message } =state
-      
+      Socket.emit('message', {
+        'message': {name, message}
+    });
+      setState({message: '', name })
     }
     
     const renderChat = () => {
