@@ -42,15 +42,24 @@ export function Content() {
       setState({message: '', name: '' })
     }
     
-    const renderChat = () => {
+    // const renderChat = () => {
       
-      return chat.map(msg => ( 
+    //   return chat.map(msg => ( 
         
-         <div key={msg.id}>
-          <h3> {msg.name} : <span> {msg.message} </span>  
-          </h3>
-         </div>
+    //     <div key={msg.id}>
+    //       <h3> {msg.name} : <span> {msg.message} </span>  
+    //       </h3>
+    //     </div>
         
+    //     ))
+    // }
+    const renderChat = () => {
+      return chat.map(({ name, message}, index) => (
+        <div key={index}>
+          <h3> 
+            {name}: <span> {message} </span>
+            </h3>
+          </div>
         ))
     }
     
@@ -81,14 +90,8 @@ export function Content() {
      <button>Send Message </button>
     </form>
       <div className= "render-chat">
-        <h1> Chat  </h1>
-        {chat.length > 0 &&
-          chat.map(msg=> (
-             <div>
-              <p> {msg} </p>
-            </div>
-        
-          ))}
+        <h1> Chat log </h1>
+        {renderChat()}
       </div>
     </div>
   );
