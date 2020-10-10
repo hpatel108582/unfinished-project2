@@ -25,9 +25,11 @@ def on_disconnect():
 @socketio.on('new message')
 def on_new_number(data):
     print("Got an event for new message with data:", data)
-    rand_message = data['message']
+    message = data['message']
+    name=data['name']
     socketio.emit('message received', {
-        'message': rand_message
+        'message': message,
+        'name': name
     })
 # @socketio.on('message')
 # def on_new_message(message):

@@ -9,53 +9,87 @@ const init = []
 
 export function Content() {
     
-    const [messages,setMessages] = useState(["Hello and Welcome"]);
-    const [message,setMessage]=useState("");
+    const [state, setState] = useState ({message: '', name: ''})
+    const [chat, setChat] = useState ([])
     
     
          function newNumber() {
         React.useEffect(() => {
             Socket.on('message received', (data) => {
-                console.log("Received an message from server: " + data['message']);
-                setMessages([...messages,data['message']]);
+                console.log("Received an message from server: " + data['message'] + " from " + data['name']);
+                setChat([...chat,data['name'], data['message']])
             })
         });
     }
     
     newNumber();
+        
+        // setChat([...chat,{name, message}])
     
     
-    const onChange = e => {
-      setMessage(e.target.value);
+    const onTextChange = e => {
+      setState ({...state, [e.target.name]: e.target.value})
+      console.log(e.target.name,e.target.value)
     }
     
-    const onClick = () => {
-      if (message !== "")
-      {
-        Socket.emit('new message', {
-        'message': message,
+    const onMessageSubmit = (e) => {
+      e.preventDefault()
+      const {name, message } =state
+      Socket.emit('new message', {
+        'name': name,
+        'message': message
     });
-        setMessage("");
-      } else {
-         alert("Please Add a Message");
-      }
+      setState({message: '', name: '' })
     }
     
-
+    const renderChat = () => {
+      
+      return chat.map(msg => ( 
+        
+         <div key={msg.id}>
+          <h3> {msg.name} : <span> {msg.message} </span>  
+          </h3>
+         </div>
+        
+        ))
+    }
     
     
  
   return (
-    <div >
-        {messages.length > 0 &&
-          messages.map(msg=> (
-            <div>
+    <div className="card">
+    <form onSubmit={onMessageSubmit}>
+      <h1> Messanger </h1>
+      <div className="name-field">
+        <TextField 
+          name="name" 
+          onChange={ e=> onTextChange(e)} 
+          value={state.name} 
+          label = "Name" 
+          />
+      </div>
+      <div>
+        <TextField 
+          name="message" 
+          onChange={ e=> onTextChange(e)} 
+          value={state.message} 
+          id="outline-multiline-static"  //This is for styling purposes
+          variant = "outlined"
+          label = "Message" 
+          />
+      </div>
+     <button>Send Message </button>
+    </form>
+      <div className= "render-chat">
+        <h1> Chat  </h1>
+        {chat.length > 0 &&
+          chat.map(msg=> (
+             <div>
               <p> {msg} </p>
             </div>
-          ))}
-        <input value={message} name="message" onChange={e => onChange(e)} />
-        <button onClick={ ()=> onClick ()} > Send Message </button> 
         
+          ))}
+      </div>
     </div>
   );
 }
