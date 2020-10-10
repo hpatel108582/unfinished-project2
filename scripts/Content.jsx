@@ -1,7 +1,7 @@
 
 import React, {useState,useEffect} from 'react';
 import { Socket } from './Socket';
-import 'static/style.css'; 
+import './style.css'; 
 import TextField from '@material-ui/core/TextField'   // styling purpose
  
 const init = []
@@ -9,70 +9,53 @@ const init = []
 
 export function Content() {
     
-    const [state, setState] = useState ({message: '', name: ''})
-    const [chat, setChat] = useState ([])
+    const [messages,setMessages] = useState(["Hello and Welcome"]);
+    const [message,setMessage]=useState("");
     
-    function newNumber() {
+    
+         function newNumber() {
         React.useEffect(() => {
-            Socket.on('message', ({name,message}) => {
-                setChat([...chat,{name, message}])
+            Socket.on('message received', (data) => {
+                console.log("Received an message from server: " + data['message']);
+                setMessages([...messages,data['message']]);
             })
         });
     }
     
-    const onTextChange = e => {
-      setState ({...state, [e.target.name]: e.target.value})
+    newNumber();
+    
+    
+    const onChange = e => {
+      setMessage(e.target.value);
     }
     
-    const onMessageSubmit = (e) => {
-      e.preventDefault()
-      const {name, message } =state
-      Socket.emit('message', {
-        'message': {name, message}
+    const onClick = () => {
+      if (message !== "")
+      {
+        Socket.emit('new message', {
+        'message': message,
     });
-      setState({message: '', name })
+        setMessage("");
+      } else {
+         alert("Please Add a Message");
+      }
     }
     
-    const renderChat = () => {
-      return chat.map(({name, message}, index) => ( 
-         <div key={index}>
-          <h3> {name} : <span> {message} </span>  
-          </h3>
-         </div>
-        
-        ))
-    }
+
     
     
  
   return (
-    <div classname="card">
-    <form onSubmit={onMessageSubmit}>
-      <h1> Messanger </h1>
-      <div classname="name-field">
-        <TextField 
-          name="name" 
-          onChange={ e=> onTextChange(e)} 
-          value={state.name} 
-          label = "Name" 
-          />
-      </div>
-      <div>
-        <TextField 
-          name="message" 
-          onChange={ e=> onTextChange(e)} 
-          value={state.message} 
-          id="outline-multiline-static"  //This is for styling purposes
-          variant = "outlined"
-          label = "Message" 
-          />
-      </div>
-     <button>Send Message </button>
-    </form>
-      <div className= "render-chat">
-        <h1> Chat Log </h1>
-        {renderChat()}
-      </div>
+    <div >
+        {messages.length > 0 &&
+          messages.map(msg=> (
+            <div>
+              <p> {msg} </p>
+            </div>
+          ))}
+        <input value={message} name="message" onChange={e => onChange(e)} />
+        <button onClick={ ()=> onClick ()} > Send Message </button> 
+        
     </div>
   );
 }

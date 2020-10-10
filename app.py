@@ -6,8 +6,6 @@ app = flask.Flask(__name__)
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
 
-app = flask.Flask(__name__)
-
 @app.route('/')
 def hello():
     return flask.render_template('index.html')
@@ -17,26 +15,31 @@ def on_connect():
     print('Someone connected!')
     socketio.emit('connected', {
         'test': 'Connected'
-    }) 
+    })
 
 @socketio.on('disconnect')
 def on_disconnect():
     print ('Someone disconnected!')
 
 
-@socketio.on('message')
-def on_new_number(name, message):
-    
-    socketio.emit('new message', {
-        'message': {name, message}
+@socketio.on('new message')
+def on_new_number(data):
+    print("Got an event for new message with data:", data)
+    rand_message = data['message']
+    socketio.emit('message received', {
+        'message': rand_message
     })
-    
-   
+# @socketio.on('message')
+# def on_new_message(message):
+#     socketio.emit('message', {
+#         'message': message
+        
+#     })
 
 if __name__ == '__main__': 
     socketio.run(
         app,
         host=os.getenv('IP', '0.0.0.0'),
-        port=int(os.getenv('PORT', 8080)),
+        port=int(os.getenv('PORT', 800)),
         debug=True
     )
