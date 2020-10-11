@@ -50,9 +50,19 @@ def on_new_number(data):
     nameCounter=0
     botMessage=""
     translate_client = translate.Client()
-    output = translate_client.translate( message, target_language='ja')
-    if message=="hi bot":
-        botMessage="bot: " + output['translatedText']
+    
+    if "!! funtranslate"  in message:
+        getMessage = message.split()
+        newMessage=""
+        newMessList=getMessage[2:]
+        for i in range(0,len(getMessage[2:])):
+            newMessage+=newMessList[i]+ " "
+        output = translate_client.translate( newMessage, target_language='ja')
+        botMessage="Charles the bot: " + output['translatedText']
+    elif "!! help" in message:
+        botMessage="Charles the bot: commands are-> !! about, !! funtranslate <input> "
+    elif "!! about" in message:
+        botMessage="Charles the bot: Hi im Charles. I am a bot. Please be nice and treat me like a human :)"
     if name not in nameList:
         nameList.append(name)
         nameCounter+=1
