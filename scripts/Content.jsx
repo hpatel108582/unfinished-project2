@@ -8,21 +8,22 @@ import TextField from '@material-ui/core/TextField'   // styling purpose
 const init = [
 
   ]
- 
+ var users = [];
+    var countUsers=0;
 
 export function Content() {
     
-    const [state, setState] = useState ({message: '', name: '',botmessage: ''})
+    const [state, setState] = useState ({message: '', name: '',botmessage: '',userCount:''})
     const [chat, setChat] = useState ([])
     
-    
+  
          function newNumber() {
         React.useEffect(() => {
             Socket.on('message received', (data) => {
                 console.log("Received an message from server: " + data['message'] + " from " + data['name'] +
                 " and bot said: "+ data['botMessage']);
                 
-                setChat([...chat,[data['name'] +" : ",data['message']], data['botMessage']])
+                setChat([...chat,[data['name'] +" : ",data['message']], data['botMessage'],data['userCount']])
                 
                 
             })
@@ -41,11 +42,18 @@ export function Content() {
     const onMessageSubmit = (e) => {
       e.preventDefault()
       const {name, message } =state
+     
+      if  (users.includes(name)!=true)
+      {
+          users.push(name)
+          ++countUsers;
+      }
       Socket.emit('new message', {
         'name': name,
-        'message': message
+        'message': message,
+        'userCount': (countUsers).toString()
     });
-      setState({message: '', name: '' })
+      setState({message: '', name: ''})
     }
     
   

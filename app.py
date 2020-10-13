@@ -44,13 +44,24 @@ def on_disconnect():
 
 @socketio.on('new message')
 def on_new_number(data):
+    #request.sid
     print("Got an event for new message with data:", data)
     message = data['message']
     name=data['name']
-    nameCounter=0
     botMessage=""
+    currentUserCounter=0
+    updateUserCounter = int(data['userCount'])
+    if (currentUserCounter!= updateUserCounter):
+        currentUserCounter=updateUserCounter
+        countUser="Users in the chat:  " + data['userCount']
+    else:
+        countUser=""
+    # if name not in nameList:
+    #     nameList.append(name)
+    #     nameCounter+=1
+    # socketio.username=name
     translate_client = translate.Client()
-    
+    ###########################################################
     if "!! funtranslate"  in message:
         getMessage = message.split()
         newMessage=""
@@ -63,14 +74,13 @@ def on_new_number(data):
         botMessage="Charles the bot: commands are-> !! about, !! funtranslate <input> "
     elif "!! about" in message:
         botMessage="Charles the bot: Hi im Charles. I am a bot. Please be nice and treat me like a human :)"
-    if name not in nameList:
-        nameList.append(name)
-        nameCounter+=1
+    ###########################################################
     print("People talking in the chat: ", nameCounter)
     socketio.emit('message received', {
         'message': message,
         'name': name,
-        'botMessage': botMessage
+        'botMessage': botMessage,
+        'userCount':countUser
         
     })
 
