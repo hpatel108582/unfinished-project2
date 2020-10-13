@@ -111,7 +111,7 @@ export function Content() {
         <h1> Chat </h1>
         <ol>
                     {messages.map((message, index) =>
-                        <li key={index}>{message}</li>)}
+                        <p key={index}>{message}</p>)}
                 </ol>
          {chat.length > 0 &&
           chat.map(msg=> (

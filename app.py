@@ -8,10 +8,13 @@ from google.cloud import translate_v2 as translate
 import json
 import models 
 
+
+
+
 dotenv_path = join(dirname(__file__), 'pro2.env')
 load_dotenv(dotenv_path)
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS']="/home/ec2-user/environment/lect8-react/google.json"
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']="/home/ec2-user/environment/project2-m1/google.json"
 
 MESSAGES_RECEIVED_CHANNEL= 'messages received'
 
@@ -30,12 +33,12 @@ dbuser = os.environ['USER']
 
 database_uri = 'postgresql://{}:{}@localhost/postgres'.format(
     sql_user, sql_pwd)
-
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 
 db = flask_sqlalchemy.SQLAlchemy(app)
 db.init_app(app)
 db.app = app
+
 
 db.create_all()
 db.session.commit()
