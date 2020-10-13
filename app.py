@@ -27,8 +27,7 @@ liveCounter=0
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
 
-# sql_user = os.environ['SQL_USER']
-# sql_pwd = os.environ['SQL_PASSWORD']
+
 dbuser = os.environ['USER']
 
 
@@ -77,7 +76,7 @@ def on_disconnect():
 
 @socketio.on('new message')
 def on_new_number(data):
-    #request.sid
+    
     print("Got an event for new message with data:", data)
     message = data['message']
     name=data['name']
@@ -93,10 +92,7 @@ def on_new_number(data):
         countUser="Users in the chat:  " + data['userCount']
     else:
         countUser=""
-    # if name not in nameList:
-    #     nameList.append(name)
-    #     nameCounter+=1
-    # socketio.username=name
+    
     translate_client = translate.Client()
     ###########################################################
     if "!! funtranslate"  in message:
