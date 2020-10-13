@@ -15,9 +15,9 @@ export function Content() {
     
     const [state, setState] = useState ({message: '', name: '',botmessage: '',userCount:''})
     const [chat, setChat] = useState ([])
-    
+    const [messages, setMessages] = React.useState([]);
   
-         function newNumber() {
+         function newMessage() {
         React.useEffect(() => {
             Socket.on('message received', (data) => {
                 console.log("Received an message from server: " + data['message'] + " from " + data['name'] +
@@ -29,8 +29,17 @@ export function Content() {
             })
         });
     }
+    function getNewMessages() {
+        React.useEffect(() => {
+            Socket.on('messages received', (data) => {
+                setMessages(data['allMessages']);
+            })
+        });
+    }
     
-    newNumber();
+    getNewMessages();
+    
+    newMessage();
         
 
   
@@ -100,6 +109,10 @@ export function Content() {
     </form>
       <div className= "render-chat">
         <h1> Chat </h1>
+        <ol>
+                    {messages.map((message, index) =>
+                        <li key={index}>{message}</li>)}
+                </ol>
          {chat.length > 0 &&
           chat.map(msg=> (
             <div>
