@@ -14,7 +14,34 @@ import models
 dotenv_path = join(dirname(__file__), 'pro2.env')
 load_dotenv(dotenv_path)
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS']="/home/ec2-user/environment/project2-m1/google.json"
+googleApi=[ 
+    os.environ['type'],
+    os.environ['project_id'],
+    os.environ['private_key_id'],
+    os.environ['private_key'],
+    os.environ['client_email'],
+    os.environ['client_id'],
+     os.environ['auth_uri'],
+     os.environ['token_uri'],
+     os.environ['auth_provider_x509_cert_url'],
+     os.environ['client_x509_cert_url']
+     ]
+
+googleCall= [{
+  "type": googleApi[0],
+  "project_id": googleApi[1],
+  "private_key_id": googleApi[2],
+  "private_key": googleApi[3],
+  "client_email": googleApi[4],
+  "client_id": googleApi[5],
+  "auth_uri": googleApi[6],
+  "token_uri": googleApi[7],
+  "auth_provider_x509_cert_url": googleApi[8],
+  "client_x509_cert_url": googleApi[9]
+}]
+
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']=json.dumps(googleCall)
 
 MESSAGES_RECEIVED_CHANNEL= 'messages received'
 
