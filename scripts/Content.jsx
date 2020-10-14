@@ -97,15 +97,18 @@ export function Content() {
     </form>
       <div className= "render-chat">
         <h2> CHAT </h2>
+        <h3> OLD MESSAGES: </h3>
         <ol>
                     {messages.map((message, index) =>
                         <p key={index}>{message}</p>)}
                 </ol>
+        <h3> NEW MESSAGES: </h3>
          {chat.length > 0 &&
           chat.map(msg=> (
-            <div>
-              <p> {msg} </p>
-            </div>
+            <div >
+        <p>{msg}</p>
+       
+    </div>
           ))}
       </div>
     </div>
