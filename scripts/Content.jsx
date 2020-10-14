@@ -5,9 +5,7 @@ import './style.css';
 import TextField from '@material-ui/core/TextField'   // styling purpose
 
 
-const init = [
 
-  ]
  var users = [];
     var countUsers=0;
 
@@ -65,19 +63,7 @@ export function Content() {
       setState({message: '', name: ''})
     }
     
-  
-  
-  
-    const renderChat = () => {
-      return chat.map(({name,message,botmessage}, index) => (
-        <div key={index}>
-          <h3> 
-            {name}: <span> {message} </span>
-            </h3>
-            <p> {botmessage} </p>
-          </div>
-        ))
-    }
+
     
   
     
@@ -86,7 +72,7 @@ export function Content() {
     <body>
     <div className="card">
     <form onSubmit={onMessageSubmit}>
-      <h1> Messanger </h1>
+      <h2> SENDER </h2>
       <div className="name-field">
         <TextField 
           name="name" 
@@ -94,6 +80,8 @@ export function Content() {
           value={state.name} 
           label = "Name" 
           />
+          <p> Talk to Charles the bot! </p> 
+          <p> Commands: !! help, !! about </p>
       </div>
       <div>
         <TextField 
@@ -108,7 +96,7 @@ export function Content() {
      <button>Send Message </button>
     </form>
       <div className= "render-chat">
-        <h1> Chat </h1>
+        <h2> CHAT </h2>
         <ol>
                     {messages.map((message, index) =>
                         <p key={index}>{message}</p>)}
@@ -125,10 +113,3 @@ export function Content() {
     
   );
 }
-
-// {chat.length > 0 &&
-//           chat.map(msg=> (
-//             <div>
-//               <p> {msg} </p>
-//             </div>
-//           ))}

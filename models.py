@@ -7,7 +7,8 @@ class Messanger(db.Model):
     message = db.Column(db.String(120))
     
     def __init__(self, a):
-        self.message = a
+        self.message=a
+        
         
     def __repr__(self):
-        return '<User message: %s>' % self.message
+        return '<User messages: %s>' % self.message
