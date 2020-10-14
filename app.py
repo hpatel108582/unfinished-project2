@@ -26,7 +26,6 @@ socketio = flask_socketio.SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
 
 
-dbuser = os.environ['USER']
 
 
 database_uri= os.getenv('DATABASE_URL')
