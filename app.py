@@ -73,12 +73,10 @@ def on_disconnect():
 
 @socketio.on('new message')
 def on_new_number(data):
-    response = data['response']
+    
     print("Got an event for new message with data:", data)
     message = data['message']
-    name=response['profileObj']['name']
-    imgurl = response['profileObj']['imageUrl']
-    
+    name=" "
     db.session.add(models.Users(name,message));
     db.session.commit();
     
@@ -107,12 +105,22 @@ def on_new_number(data):
         'userCount':countUser
         
     })
+    
+    
+    
 @socketio.on('new google json')
 def new_response(data):
     
     response = data['response']
+    print(response)
     print(response['profileObj']['imageUrl'])
     print(response['profileObj']['name'])
+    name = response['profileObj']['name']
+    
+    socketio.emit('new database', {
+        'name': name
+        
+    })
 
 if __name__ == '__main__':
     socketio.run(

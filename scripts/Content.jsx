@@ -43,9 +43,12 @@ export function Content() {
 
   
     const onTextChange = e => {
+      
       setState ({...state, [e.target.name]: e.target.value})
       console.log(e.target.name,e.target.value)
     }
+    
+    
     
     const onMessageSubmit = (e) => {
       e.preventDefault()
@@ -56,18 +59,22 @@ export function Content() {
           users.push(name)
           ++countUsers;
       }
+      
+      console.log(name)
       Socket.emit('new message', {
         'message': message,
         'userCount': (countUsers).toString()
     });
-      setState({message: '', name: ''})
+      setState({message: ''})
     }
     
 
     const responseGoogle = (response) => {
-  console.log(response);
-    Socket.emit('new message',{
-        'response': response
+      
+      var name = response["profileObj"]["name"]
+      console.log(name)
+    Socket.emit('new google json',{
+        'response': response,
         
     })
 }
@@ -78,7 +85,7 @@ export function Content() {
     <div className="card">
     <form onSubmit={onMessageSubmit}>
       <h2> SENDER </h2>
-      <div >
+      <div>
         <GoogleLogin
     clientId="971386070475-gsu8hkf6suj7vcvg5013kgfcfb3n9pcs.apps.googleusercontent.com"
     buttonText="Login"
@@ -89,7 +96,6 @@ export function Content() {
           <p> Talk to Charles the bot! </p> 
           <p> Commands: !! help, !! about </p>
       </div>
-      
       <div>
         <TextField 
           name="message" 
