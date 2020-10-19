@@ -73,10 +73,12 @@ def on_disconnect():
 
 @socketio.on('new message')
 def on_new_number(data):
-    
+    @socketio.on('new response')
+    def newRes(data):
+        print("hi")
     print("Got an event for new message with data:", data)
     message = data['message']
-    name=" "
+    name=data['name']
     db.session.add(models.Users(name,message));
     db.session.commit();
     

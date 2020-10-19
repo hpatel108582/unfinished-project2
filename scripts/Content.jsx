@@ -15,7 +15,7 @@ export function Content() {
     const [chat, setChat] = useState ([])
     const [count,setCount] = useState([])
     const [messages, setMessages] = React.useState([]);
-  
+    
          function newMessage() {
         React.useEffect(() => {
             Socket.on('message received', (data) => {
@@ -53,15 +53,17 @@ export function Content() {
     const onMessageSubmit = (e) => {
       e.preventDefault()
       const {name, message } =state
-     
+      
       if  (users.includes(name)!=true)
       {
           users.push(name)
           ++countUsers;
       }
       
-      console.log(name)
+
+      
       Socket.emit('new message', {
+        'name': name,
         'message': message,
         'userCount': (countUsers).toString()
     });
@@ -71,14 +73,18 @@ export function Content() {
 
     const responseGoogle = (response) => {
       
-      var name = response["profileObj"]["name"]
-      console.log(name)
+      var googleName = response["profileObj"]["name"]
+      var googleImage= response["profileObj"]["imageUrl"]
+      
+      setChat([...chat,googleName])
+      console.log(googleName)
     Socket.emit('new google json',{
         'response': response,
         
-    })
+    }
+    )
 }
-  
+ 
  
   return (
     <body>
@@ -93,6 +99,13 @@ export function Content() {
     onFailure={responseGoogle}
     cookiePolicy={'single_host_origin'}
   />
+   <TextField 
+          name="name" 
+          onChange={ e=> onTextChange(e)} 
+          value={state.name} 
+          id="outline-multiline-static"  //This is for styling purposes
+          label = "Name" 
+          />
           <p> Talk to Charles the bot! </p> 
           <p> Commands: !! help, !! about </p>
       </div>
