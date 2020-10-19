@@ -9,6 +9,8 @@ import models
 
 
 
+
+
 dotenv_path = join(dirname(__file__), 'pro2.env')
 load_dotenv(dotenv_path)
 
@@ -27,23 +29,21 @@ socketio.init_app(app, cors_allowed_origins="*")
 
 
 
-
-database_uri= os.getenv('DATABASE_URL')
+database_uri = os.environ['DATABASE_URL']
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 
 db = flask_sqlalchemy.SQLAlchemy(app)
 db.init_app(app)
 db.app = app
-
-
 db.create_all()
 db.session.commit()
 
+
 def emit_all_messages(channel):
     all_messages = [ \
-        db_message.message for db_message \
-        in db.session.query(models.Messanger).all()]
+       ( db_message.name,db_message.message)  for db_message \
+        in db.session.query(models.Users).all()]
         
     socketio.emit(channel, {
         'allMessages': all_messages
@@ -73,11 +73,13 @@ def on_disconnect():
 
 @socketio.on('new message')
 def on_new_number(data):
-    
+    response = data['response']
     print("Got an event for new message with data:", data)
     message = data['message']
-    name=data['name']
-    db.session.add(models.Messanger(data['message']));
+    name=response['profileObj']['name']
+    imgurl = response['profileObj']['imageUrl']
+    
+    db.session.add(models.Users(name,message));
     db.session.commit();
     
     emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
@@ -105,9 +107,14 @@ def on_new_number(data):
         'userCount':countUser
         
     })
+@socketio.on('new google json')
+def new_response(data):
+    
+    response = data['response']
+    print(response['profileObj']['imageUrl'])
+    print(response['profileObj']['name'])
 
-
-if __name__ == '__main__': 
+if __name__ == '__main__':
     socketio.run(
         app,
         host=os.getenv('IP', '0.0.0.0'),

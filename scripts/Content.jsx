@@ -3,7 +3,7 @@ import React, {useState,useEffect} from 'react';
 import { Socket } from './Socket';
 import './style.css'; 
 import TextField from '@material-ui/core/TextField'   // styling purpose
-
+import GoogleLogin from 'react-google-login';
 
 
  var users = [];
@@ -13,6 +13,7 @@ export function Content() {
     
     const [state, setState] = useState ({message: '', name: '',botmessage: '',userCount:''})
     const [chat, setChat] = useState ([])
+    const [count,setCount] = useState([])
     const [messages, setMessages] = React.useState([]);
   
          function newMessage() {
@@ -21,8 +22,8 @@ export function Content() {
                 console.log("Received an message from server: " + data['message'] + " from " + data['name'] +
                 " and bot said: "+ data['botMessage']);
                 
-                setChat([...chat,[data['name'] +" : ",data['message']], data['botMessage'],data['userCount']])
-                
+                setChat([...chat,[data['name'] +" : ",data['message']], data['botMessage']])
+                setCount([data['userCount']])
                 
             })
         });
@@ -56,7 +57,6 @@ export function Content() {
           ++countUsers;
       }
       Socket.emit('new message', {
-        'name': name,
         'message': message,
         'userCount': (countUsers).toString()
     });
@@ -64,25 +64,32 @@ export function Content() {
     }
     
 
-    
+    const responseGoogle = (response) => {
+  console.log(response);
+    Socket.emit('new message',{
+        'response': response
+        
+    })
+}
   
-    
  
   return (
     <body>
     <div className="card">
     <form onSubmit={onMessageSubmit}>
       <h2> SENDER </h2>
-      <div className="name-field">
-        <TextField 
-          name="name" 
-          onChange={ e=> onTextChange(e)} 
-          value={state.name} 
-          label = "Name" 
-          />
+      <div >
+        <GoogleLogin
+    clientId="971386070475-gsu8hkf6suj7vcvg5013kgfcfb3n9pcs.apps.googleusercontent.com"
+    buttonText="Login"
+    onSuccess={responseGoogle}
+    onFailure={responseGoogle}
+    cookiePolicy={'single_host_origin'}
+  />
           <p> Talk to Charles the bot! </p> 
           <p> Commands: !! help, !! about </p>
       </div>
+      
       <div>
         <TextField 
           name="message" 
@@ -97,6 +104,13 @@ export function Content() {
     </form>
       <div className= "render-chat">
         <h2> CHAT </h2>
+        {count.length > 0 &&
+          count.map(msg=> (
+            <div >
+        <p>{msg}</p>
+       
+    </div>
+          ))}
         <h3> OLD MESSAGES: </h3>
         <ol>
                     {messages.map((message, index) =>
