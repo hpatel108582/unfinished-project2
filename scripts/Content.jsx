@@ -75,11 +75,11 @@ export function Content() {
       
       var googleName = response["profileObj"]["name"]
       var googleImage= response["profileObj"]["imageUrl"]
-      
+    
       setChat([...chat,googleName])
       console.log(googleName)
-    Socket.emit('new google json',{
-        'response': response,
+    Socket.emit('new response',{
+        'googleName': googleName
         
     }
     )
@@ -104,7 +104,7 @@ export function Content() {
           onChange={ e=> onTextChange(e)} 
           value={state.name} 
           id="outline-multiline-static"  //This is for styling purposes
-          label = "Name" 
+          label = "Nickname" 
           />
           <p> Talk to Charles the bot! </p> 
           <p> Commands: !! help, !! about </p>

@@ -73,40 +73,43 @@ def on_disconnect():
 
 @socketio.on('new message')
 def on_new_number(data):
-    @socketio.on('new response')
-    def newRes(data):
-        print("hi")
-    print("Got an event for new message with data:", data)
-    message = data['message']
-    name=data['name']
-    db.session.add(models.Users(name,message));
-    db.session.commit();
+    name=""
+    if data['message']=='':
+        response=data['response']
+        name=response["profileObj"]["name"]
+    else: 
+        message=data['message']
+        db.session.add(models.Users(name,message));
+        db.session.commit();
     
-    emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
-    botMessage=""
-    currentUserCounter=0
-    updateUserCounter = int(data['userCount'])
-    if (currentUserCounter!= updateUserCounter):
-        currentUserCounter=updateUserCounter
-        countUser="Users in the chat:  " + data['userCount']
-    else:
-        countUser=""
+        emit_all_messages(MESSAGES_RECEIVED_CHANNEL)
+        botMessage=""
+        currentUserCounter=0
+        updateUserCounter = int(data['userCount'])
+        if (currentUserCounter!= updateUserCounter):
+            currentUserCounter=updateUserCounter
+            countUser="Users in the chat:  " + data['userCount']
+        else:
+            countUser=""
     
     ###########################################################
-    
-    if "!! help" in message:
-        botMessage="Charles the bot: commands are-> !! about, !! funtranslate <input> "
-    elif "!! about" in message:
-        botMessage="Charles the bot: Hi im Charles. I am a bot. Please be nice and treat me like a human :)"
+        print(name + " " + message)
+        if "!! help" in message:
+            botMessage="Charles the bot: commands are-> !! about, !! funtranslate <input> "
+        elif "!! about" in message:
+            botMessage="Charles the bot: Hi im Charles. I am a bot. Please be nice and treat me like a human :)"
     ###########################################################
-    print("People talking in the chat: ", nameCounter)
-    socketio.emit('message received', {
+        print("People talking in the chat: ", nameCounter)
+        socketio.emit('message received', {
         'message': message,
         'name': name,
         'botMessage': botMessage,
         'userCount':countUser
         
-    })
+        })
+    
+    
+    
     
     
     
